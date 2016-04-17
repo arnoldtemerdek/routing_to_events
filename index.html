@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/label.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css" />
+        <script src="js/leaflet.js"></script>
+        <script src="js/OSMBuildings-Leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/label.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+		
+		.toolpanel{
+			position:fixed;
+			width:40px; 
+			height: 140px; 
+			right: 0px; 
+			top: 170px;
+			background-color: rgba(245,245,245, 0.75); 
+			-moz-border-radius: 15px 10px 10px 15px;
+			border-radius: 15px 10px 10px 15px; 
+			text-align:center;
+			box-shadow: rgba(0,0,0,.25) -3px 3px 2px 0;
+		}
+		
+		.toolpanel ul {
+			list-style: none;
+			display: inline;
+			position:relative;
+			left: +10px;
+		}
+		
+		img{
+			width:23px;
+		}
+
+		.toolpanel .toolpanel_element {
+			width: 23px; 
+			height: 23px;
+			border: 1px solid transparent;
+			padding: 1px !important;
+		} 
+
+		.toolpanel .toolpanel_element:hover {
+			background: #ddd;
+			padding: 1px !important;
+			border: 1px solid #ccc;
+			right: 20px;
+		}
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+		<div class="toolpanel">
+			<ul>
+				<li id="addStartpoint" class="toolpanel_element"><a><img src="img/position.png"></a></li>
+			</ul>
+		</div>
+        <script src="data/json_rolocalitatipunct0.js"></script>
+        <script>
+		var startLatitude=0.0, startLongitude=0.0;
+		var geojsonLayer;
+		var marker;
+		
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[45.7207636758,21.8295537761],[46.9872761191,25.0812428301]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        var feature_group = new L.featureGroup([]);
+        var bounds_group = new L.featureGroup([]);
+        var raster_group = new L.LayerGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap0.addTo(map);
+        var layerOrder = new Array();
+        function stackLayers() {
+            for (index = 0; index < layerOrder.length; index++) {
+                map.removeLayer(layerOrder[index]);
+                map.addLayer(layerOrder[index]);
+            }
+        }
+        function restackLayers() {
+            for (index = 0; index < layerOrder.length; index++) {
+                layerOrder[index].bringToFront();
+            }
+        }
+        layerControl = L.control.layers({},{},{collapsed:false});
+        function pop_rolocalitatipunct0(feature, layer) {
+            var popupContent = '<table><tr><th scope="row">natCode</th><td>' + (feature.properties['natCode'] !== null ? Autolinker.link(String(feature.properties['natCode'])) : '') + '</td></tr><tr><th scope="row">name</th><td>' + (feature.properties['name'] !== null ? Autolinker.link(String(feature.properties['name'])) : '') + '</td></tr><tr><th scope="row">countyId</th><td>' + (feature.properties['countyId'] !== null ? Autolinker.link(String(feature.properties['countyId'])) : '') + '</td></tr><tr><th scope="row">countyCode</th><td>' + (feature.properties['countyCode'] !== null ? Autolinker.link(String(feature.properties['countyCode'])) : '') + '</td></tr><tr><th scope="row">county</th><td>' + (feature.properties['county'] !== null ? Autolinker.link(String(feature.properties['county'])) : '') + '</td></tr><tr><th scope="row">countyMn</th><td>' + (feature.properties['countyMn'] !== null ? Autolinker.link(String(feature.properties['countyMn'])) : '') + '</td></tr><tr><th scope="row">regionId</th><td>' + (feature.properties['regionId'] !== null ? Autolinker.link(String(feature.properties['regionId'])) : '') + '</td></tr><tr><th scope="row">regionCode</th><td>' + (feature.properties['regionCode'] !== null ? Autolinker.link(String(feature.properties['regionCode'])) : '') + '</td></tr><tr><th scope="row">region</th><td>' + (feature.properties['region'] !== null ? Autolinker.link(String(feature.properties['region'])) : '') + '</td></tr><tr><th scope="row">pop2002</th><td>' + (feature.properties['pop2002'] !== null ? Autolinker.link(String(feature.properties['pop2002'])) : '') + '</td></tr><tr><th scope="row">rank</th><td>' + (feature.properties['rank'] !== null ? Autolinker.link(String(feature.properties['rank'])) : '') + '</td></tr><tr><th scope="row">type</th><td>' + (feature.properties['type'] !== null ? Autolinker.link(String(feature.properties['type'])) : '') + '</td></tr><tr><th scope="row">enviroType</th><td>' + (feature.properties['enviroType'] !== null ? Autolinker.link(String(feature.properties['enviroType'])) : '') + '</td></tr><tr><th scope="row">postalCode</th><td>' + (feature.properties['postalCode'] !== null ? Autolinker.link(String(feature.properties['postalCode'])) : '') + '</td></tr><tr><th scope="row">oldPostal</th><td>' + (feature.properties['oldPostal'] !== null ? Autolinker.link(String(feature.properties['oldPostal'])) : '') + '</td></tr><tr><th scope="row">sortCode</th><td>' + (feature.properties['sortCode'] !== null ? Autolinker.link(String(feature.properties['sortCode'])) : '') + '</td></tr><tr><th scope="row">supCode</th><td>' + (feature.properties['supCode'] !== null ? Autolinker.link(String(feature.properties['supCode'])) : '') + '</td></tr><tr><th scope="row">nameSup</th><td>' + (feature.properties['nameSup'] !== null ? Autolinker.link(String(feature.properties['nameSup'])) : '') + '</td></tr><tr><th scope="row">ghost</th><td>' + (feature.properties['ghost'] !== null ? Autolinker.link(String(feature.properties['ghost'])) : '') + '</tr><tr><th scope="row">Route: </th></td><td><button onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Route Me!</button></td></tr></table>';
+            layer.bindPopup(popupContent);
+        }
+		
+		function decodePolyline(str, precision) {
+			var index = 0,
+			lat = 0,
+			lng = 0,
+			coordinates = [],
+			shift = 0,
+			result = 0,
+			byte = null,
+			latitude_change,
+			longitude_change,
+			factor = Math.pow(10, precision || 5);
+
+			// Coordinates have variable length when encoded, so just keep
+			// track of whether we've hit the end of the string. In each
+			// loop iteration, a single coordinate is decoded.
+			while (index < str.length) {
+
+				// Reset shift, result, and byte
+				byte = null;
+				shift = 0;
+				result = 0;
+
+				do {
+					byte = str.charCodeAt(index++) - 63;
+					result |= (byte & 0x1f) << shift;
+					shift += 5;
+				} while (byte >= 0x20);
+
+				latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+				shift = result = 0;
+
+				do {
+					byte = str.charCodeAt(index++) - 63;
+					result |= (byte & 0x1f) << shift;
+					shift += 5;
+				} while (byte >= 0x20);
+
+				longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+				lat += latitude_change;
+				lng += longitude_change;
+
+				coordinates.push([lat / factor*0.1, lng / factor*0.1]);
+			}
+
+			return coordinates;
+		};
+
+		function polylineToGeoJSON(str, precision) {
+			var coords = decodePolyline(str, precision);
+			return {
+				type: 'LineString',
+				coordinates: flipped(coords)
+			};
+		};
+
+		function flipped(coords) {
+			var flipped = [];
+			for (var i = 0; i < coords.length; i++) {
+				flipped.push(coords[i].slice().reverse());
+			}
+			return flipped;
+		}
+		
+		function onMapClick(e) {
+			if (marker!=null){
+				map.removeLayer(marker);
+			};
+			marker = new L.marker(e.latlng, {draggable:'true'});
+			marker.on('dragend', function(event){
+				marker = event.target;
+				var position = marker.getLatLng();
+				marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
+				map.panTo(new L.LatLng(position.lat, position.lng));
+			});
+			startLatitude=e.latlng.lat;
+			startLongitude=e.latlng.lng;
+			map.addLayer(marker);
+		};
+
+		map.on('click', onMapClick);
+		
+		function getRoute(finishLongitude, finishLatitiude){
+			if (startLatitude==0){
+				alert('Please click on the map to set start position')
+			}else{
+				console.log(geojsonLayer);
+				if (geojsonLayer!=null){
+					map.removeLayer(geojsonLayer)
+				};
+				var requestURL='http://router.project-osrm.org/viaroute?loc='+startLatitude+','+startLongitude+'&loc='+finishLatitiude+','+finishLongitude+'&instructions=false';
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.open( "GET", requestURL, false );
+				xmlHttp.send( null );
+				var parsedData = JSON.parse(xmlHttp.response);
+				var geoJSON=polylineToGeoJSON(parsedData.route_geometry);
+				alert(parsedData.route_summary.total_distance/1000);
+				geojsonLayer=L.geoJson(geoJSON).addTo(map);
+			}
+		}
+
+        function doStylerolocalitatipunct0() {
+            return {
+                radius: 2.2,
+                fillColor: '#e31a1c',
+                color: '#000000',
+                weight: 2.4,
+                opacity: 1.0,
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                fillOpacity: 1.0
+            }
+        }
+		
+        function doPointToLayerrolocalitatipunct0(feature, latlng) {
+            return L.marker(latlng)
+        }
+        var json_rolocalitatipunct0JSON = new L.geoJson(json_rolocalitatipunct0, {
+            onEachFeature: pop_rolocalitatipunct0, 
+            pointToLayer: doPointToLayerrolocalitatipunct0
+            });
+        var cluster_grouprolocalitatipunct0JSON = new L.MarkerClusterGroup({showCoverageOnHover: false});
+        cluster_grouprolocalitatipunct0JSON.addLayer(json_rolocalitatipunct0JSON);
+
+        layerOrder[layerOrder.length] = cluster_grouprolocalitatipunct0JSON;
+
+        bounds_group.addLayer(json_rolocalitatipunct0JSON);
+        cluster_grouprolocalitatipunct0JSON.addTo(map);
+        raster_group.addTo(map);
+        feature_group.addTo(map);
+        var osmGeocoder = new L.Control.OSMGeocoder({
+            collapsed: false,
+            position: 'topright',
+            text: 'Search',
+        });
+        osmGeocoder.addTo(map);
+        map.locate({setView: true, maxZoom: 16});
+        function onLocationFound(e) {
+            var radius = e.accuracy / 2;
+            L.marker(e.latlng).addTo(map)
+            .bindPopup("You are within " + radius + " meters from this point")
+            .openPopup();
+            L.circle(e.latlng, radius).addTo(map);
+        }
+        map.on('locationfound', onLocationFound);
+        L.control.scale({options: {position: 'bottomleft', maxWidth: 100, metric: true, imperial: false, updateWhenIdle: false}}).addTo(map);
+        stackLayers();
+        map.on('overlayadd', restackLayers);
+        </script>
+    </body>
+</html>

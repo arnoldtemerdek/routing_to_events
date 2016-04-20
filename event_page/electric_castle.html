@@ -12,34 +12,78 @@
         <link rel="stylesheet" href="css/MarkerCluster.css" />
         <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
 		<link rel="stylesheet" href="css/Leaflet.vector-markers.css">
-		<link rel="stylesheet" href="css/map.css">		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-        <!-- <link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css" /> -->
+        <link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css" />
         <script src="js/leaflet.js"></script>
         <script src="js/OSMBuildings-Leaflet.js"></script>
         <script src="js/leaflet-hash.js"></script>
         <script src="js/label.js"></script>
         <script src="js/Autolinker.min.js"></script>
-        <script src="js/Control.OSMGeocoder.js"></script>
+        <script src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
 		<script src="js/leaflet.vector-markers.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-		<script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>	
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
-		<script src="js/jquery-ui-messageBox.js"></script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+	<script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+	
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+	<script src="js/jquery-ui-messageBox.js"></script>
 		
         <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+		
+		.toolpanel{
+			position:fixed;
+			width:40px; 
+			height: 140px; 
+			right: 0px; 
+			top: 170px;
+			background-color: rgba(245,245,245, 0.75); 
+			-moz-border-radius: 15px 10px 10px 15px;
+			border-radius: 15px 10px 10px 15px; 
+			text-align:center;
+			box-shadow: rgba(0,0,0,.25) -3px 3px 2px 0;
+		}
+		
+		.toolpanel ul {
+			list-style: none;
+			display: inline;
+			position:relative;
+			left: +10px;
+		}
+		
+		img{
+			width:23px;
+		}
 
+		.toolpanel .toolpanel_element {
+			width: 23px; 
+			height: 23px;
+			border: 1px solid transparent;
+			padding: 1px !important;
+		} 
+
+		.toolpanel .toolpanel_element:hover {
+			background: #ddd;
+			padding: 1px !important;
+			border: 1px solid #ccc;
+			right: 20px;
+		}
         </style>
         <title></title>
     </head>
     <body>
-        <div id="map"></div>
-		<div class="search_panel" id="search_panel">
-			<a href="javascript:void(0);" id="search_slider" class="search_slider show"><img src="img/Search.png"></a>
-			<p id="developer_text" class="developer_text"></p>
-			<input href="javascript:void(0);" class="search_event" id="search_event">
-			<br>
+        <div id="map">
+        </div>
+		<div class="toolpanel">
+			<ul>
+				<li id="addStartpoint" class="toolpanel_element"><a><img src="img/position.png"></a></li>
+			</ul>
 		</div>
         <script src="data/json_rolocalitatipunct0.js"></script>
         <script>
@@ -60,28 +104,11 @@
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
         var raster_group = new L.LayerGroup([]);
-        /*var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-            maxZoom: 28
-        });*/
-		//Stamen basemap
-		/*var basemap0 = L.tileLayer('http://a.tile.stamen.com/toner/{z}/{x}/{y}.png', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Mapdata: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-            maxZoom: 28
-        });*/
-		//OSM black and white basemap
-		var basemap0 = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             maxZoom: 28
         });
         basemap0.addTo(map);
-		
-		//The hillshade overlay
-		var hillUrl = 'http://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png';
-		var hillAttribution = 'Hillshading: SRTM3 v2 (<a href="http://www2.jpl.nasa.gov/srtm/">NASA</a>)';
-		var hill = new L.TileLayer(hillUrl, {minZoom: 10, maxZoom: 17, attribution: hillAttribution});
-		map.addLayer(hill);
-		
         var layerOrder = new Array();
         function stackLayers() {
             for (index = 0; index < layerOrder.length; index++) {
@@ -193,22 +220,11 @@
 
 		map.on('click', onMapClick);
 		
-		function toTimeString(inTime){		
-			var hours=Math.floor(inTime/3600);
-			var minutes=Math.floor((inTime-hours*3600)/60);
-			var seconds=inTime-hours*3600-minutes*60;			
-			return hours+' h, '+minutes+' m, '+seconds+' s';		
-		}
-		
 		function getRoute(finishLongitude, finishLatitiude){
 			if (startLatitude==0){
-				$.showMessageBox({
-					content:'Marcati loactia de pornire',
-					title:'Locatia de pornire',
-					type: 'warning',
-					CloseButtonText:'Inchide'
-				});
+				alert('Please click on the map to set start position')
 			}else{
+				console.log(geojsonLayer);
 				if (geojsonLayer!=null){
 					map.removeLayer(geojsonLayer)
 				};
@@ -218,12 +234,8 @@
 				xmlHttp.send( null );
 				var parsedData = JSON.parse(xmlHttp.response);
 				var geoJSON=polylineToGeoJSON(parsedData.route_geometry);
-				console.log(parsedData.route_summary);
-				$.showMessageBox({
-					content:'Distanta: '+parsedData.route_summary.total_distance/1000+' km <br> Timp: '+ toTimeString(parsedData.route_summary.total_time),
-					title:'Traseul',
-					CloseButtonText:'Inchide'
-				});
+				//alert(parsedData.route_summary.total_distance/1000);
+				$.showMessageBox(str(parsedData.route_summary.total_distance/1000));
 				geojsonLayer=L.geoJson(geoJSON).addTo(map);
 			}
 		}
@@ -276,30 +288,6 @@
         L.control.scale({options: {position: 'bottomleft', maxWidth: 100, metric: true, imperial: false, updateWhenIdle: false}}).addTo(map);
         stackLayers();
         map.on('overlayadd', restackLayers);
-		
-		$(function(){
-			$('.search_slider').click(function(){
-			var anchor = this;
-			var removeClass = "hide";
-			var addClass = "show";
-			var diff = "-=470";
-			var arrows = new Image(); 
-			arrows.src="img/Search.png"
-			arrows.width=23;
-			if($(anchor).hasClass("show")){
-				diff = "+=470";
-				removeClass = "show";
-				addClass="hide";
-				arrows.src="img/Search_close.png"
-			}
-			$( ".search_panel" ).animate({
-				right: diff
-				}, 700, function() {
-				// Animation complete.
-					$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
-				});     
-		});   
-	});
         </script>
     </body>
 </html>

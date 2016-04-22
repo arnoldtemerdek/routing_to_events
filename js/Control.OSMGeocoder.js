@@ -1,7 +1,8 @@
 if (typeof console == "undefined") {
 	this.console = { log: function (msg) { /* do nothing since it would otherwise break IE */} };
-}
+};
 
+var searchMarker;
 
 L.Control.OSMGeocoder = L.Control.extend({
 	options: {
@@ -25,9 +26,24 @@ L.Control.OSMGeocoder = L.Control.extend({
 			first = new L.LatLng(bbox[0], bbox[2]),
 			second = new L.LatLng(bbox[1], bbox[3]),
 			bounds = new L.LatLngBounds([first, second]);
-			center = 
-			this._map.fitBounds(bounds);
-			L.marker([results[0].lat, results[0].lon]).addTo(this._map)
+			center = this._map.fitBounds(bounds);
+			
+			//Stergere Marker de locatie daca exista
+			if (searchMarker!=null){
+				map.removeLayer(searchMarker);
+			}
+			
+			//Icon pentru locatia cautata
+			var locationFoundMarker = L.VectorMarkers.icon({
+				iconSize:     [10, 20], // size of the icon
+				shadowSize:   [10, 20],
+				icon: 'star',
+				prefix: 'fa',
+				markerColor: 'red', 
+				iconColor: '#eee8d5'
+			});
+			
+			searchMarker=L.marker([results[0].lat, results[0].lon],{icon: locationFoundMarker}).addTo(this._map)
             .bindPopup("Locatia cautata")
             .openPopup();
 		}

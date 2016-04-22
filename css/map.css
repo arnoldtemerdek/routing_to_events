@@ -57,3 +57,16 @@ img{
 	top: +0px; 
 	font-size: 15px;
 }
+
+.event_panel {
+	width:510px;
+	float:right;
+	height:100%;
+	position:fixed;
+	left: -480px;
+	top: 10px;
+	border-radius: 15px 10px 10px 15px;
+	background-color: rgba(245,245,245, 0.75);
+	-moz-border-radius: 15px 10px 10px 15px;
+	box-shadow: rgba(0,0,0,.25) 0 3px 2px 3px;
+}

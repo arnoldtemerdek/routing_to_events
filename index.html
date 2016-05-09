@@ -42,6 +42,10 @@
 			<br>
 		</div>
 		<div class="event_panel" id="event_panel">
+			<a href="javascript:void(0);" id="event_slider" class="event_slider show"><img src="img/Search_close.png"></a>
+			<div class="embeded_event" id="embeded_event">
+			<div>
+		</div>
         <script src="data/json_rolocalitatipunct0.js"></script>
         <script>
 		var startLatitude=0.0, startLongitude=0.0;
@@ -54,10 +58,14 @@
                 return this._bounds;
             }
         });
+		
+		//Initializarea obiectului de harta nivele de zoom, si extentul
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
         }).fitBounds([[45.7207636758,21.8295537761],[46.9872761191,25.0812428301]]);
+		
         var hash = new L.Hash(map);
+		
         map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a><a>|</a><a href="http://project-osrm.org/" target="_blank">OSRM</a><a>|</a><a href="http://opendatacommons.org/licenses/odbl/" target="_blank">ODbL</a>');
         var feature_group = new L.featureGroup([]);
         var bounds_group = new L.featureGroup([]);
@@ -71,14 +79,14 @@
             attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Mapdata: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             maxZoom: 28
         });*/
-		//OSM black and white basemap
+		//Stratul de baza de tip OSM black & white
 		var basemap0 = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             maxZoom: 28
         });
         basemap0.addTo(map);
 		
-		//The hillshade overlay
+		//Stratul cu umbrire
 		var hillUrl = 'http://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png';
 		var hillAttribution = 'Hillshading: SRTM3 v2 (<a href="http://www2.jpl.nasa.gov/srtm/">NASA</a>)';
 		var hill = new L.TileLayer(hillUrl, {minZoom: 10, maxZoom: 17, attribution: hillAttribution});
@@ -97,11 +105,14 @@
             }
         }
         layerControl = L.control.layers({},{},{collapsed:false});
+		
+		//Functia care creaza continutul pentru popup
         function pop_rolocalitatipunct0(feature, layer) {
-            var popupContent = '<table><tr><th scope="row">natCode</th><td>' + (feature.properties['natCode'] !== null ? Autolinker.link(String(feature.properties['natCode'])) : '') + '</td></tr><tr><th scope="row">name</th><td>' + (feature.properties['name'] !== null ? Autolinker.link(String(feature.properties['name'])) : '') + '</td></tr><tr><th scope="row">countyId</th><td>' + (feature.properties['countyId'] !== null ? Autolinker.link(String(feature.properties['countyId'])) : '') + '</td></tr><tr><th scope="row">countyCode</th><td>' + (feature.properties['countyCode'] !== null ? Autolinker.link(String(feature.properties['countyCode'])) : '') + '</td></tr><tr><th scope="row">county</th><td>' + (feature.properties['county'] !== null ? Autolinker.link(String(feature.properties['county'])) : '') + '</td></tr><tr><th scope="row">countyMn</th><td>' + (feature.properties['countyMn'] !== null ? Autolinker.link(String(feature.properties['countyMn'])) : '') + '</td></tr><tr><th scope="row">regionId</th><td>' + (feature.properties['regionId'] !== null ? Autolinker.link(String(feature.properties['regionId'])) : '') + '</td></tr><tr><th scope="row">regionCode</th><td>' + (feature.properties['regionCode'] !== null ? Autolinker.link(String(feature.properties['regionCode'])) : '') + '</td></tr><tr><th scope="row">region</th><td>' + (feature.properties['region'] !== null ? Autolinker.link(String(feature.properties['region'])) : '') + '</td></tr><tr><th scope="row">pop2002</th><td>' + (feature.properties['pop2002'] !== null ? Autolinker.link(String(feature.properties['pop2002'])) : '') + '</td></tr><tr><th scope="row">rank</th><td>' + (feature.properties['rank'] !== null ? Autolinker.link(String(feature.properties['rank'])) : '') + '</td></tr><tr><th scope="row">type</th><td>' + (feature.properties['type'] !== null ? Autolinker.link(String(feature.properties['type'])) : '') + '</td></tr><tr><th scope="row">enviroType</th><td>' + (feature.properties['enviroType'] !== null ? Autolinker.link(String(feature.properties['enviroType'])) : '') + '</td></tr><tr><th scope="row">postalCode</th><td>' + (feature.properties['postalCode'] !== null ? Autolinker.link(String(feature.properties['postalCode'])) : '') + '</td></tr><tr><th scope="row">oldPostal</th><td>' + (feature.properties['oldPostal'] !== null ? Autolinker.link(String(feature.properties['oldPostal'])) : '') + '</td></tr><tr><th scope="row">sortCode</th><td>' + (feature.properties['sortCode'] !== null ? Autolinker.link(String(feature.properties['sortCode'])) : '') + '</td></tr><tr><th scope="row">supCode</th><td>' + (feature.properties['supCode'] !== null ? Autolinker.link(String(feature.properties['supCode'])) : '') + '</td></tr><tr><th scope="row">nameSup</th><td>' + (feature.properties['nameSup'] !== null ? Autolinker.link(String(feature.properties['nameSup'])) : '') + '</td></tr><tr><th scope="row">ghost</th><td>' + (feature.properties['ghost'] !== null ? Autolinker.link(String(feature.properties['ghost'])) : '') + '</tr><tr><th scope="row">Route: </th></td><td><button onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Route Me!</button></td></tr></table></tr><tr><th scope="row">Evenimentul: </th></td><td><button onclick="getEventInPane()">Despre eveniment in detalii!</button></td></tr></table>';
+            var popupContent = '<table><tr><th scope="row">natCode</th><td>' + (feature.properties['natCode'] !== null ? Autolinker.link(String(feature.properties['natCode'])) : '') + '</td></tr><tr><th scope="row">name</th><td>' + (feature.properties['name'] !== null ? Autolinker.link(String(feature.properties['name'])) : '') + '</td></tr><tr><th scope="row">countyId</th><td>' + (feature.properties['countyId'] !== null ? Autolinker.link(String(feature.properties['countyId'])) : '') + '</td></tr><tr><th scope="row">countyCode</th><td>' + (feature.properties['countyCode'] !== null ? Autolinker.link(String(feature.properties['countyCode'])) : '') + '</td></tr><tr><th scope="row">county</th><td>' + (feature.properties['county'] !== null ? Autolinker.link(String(feature.properties['county'])) : '') + '</td></tr><tr><th scope="row">countyMn</th><td>' + (feature.properties['countyMn'] !== null ? Autolinker.link(String(feature.properties['countyMn'])) : '') + '</td></tr><tr><th scope="row">regionId</th><td>' + (feature.properties['regionId'] !== null ? Autolinker.link(String(feature.properties['regionId'])) : '') + '</td></tr><tr><th scope="row">regionCode</th><td>' + (feature.properties['regionCode'] !== null ? Autolinker.link(String(feature.properties['regionCode'])) : '') + '</td></tr><tr><th scope="row">region</th><td>' + (feature.properties['region'] !== null ? Autolinker.link(String(feature.properties['region'])) : '') + '</td></tr><tr><th scope="row">pop2002</th><td>' + (feature.properties['pop2002'] !== null ? Autolinker.link(String(feature.properties['pop2002'])) : '') + '</td></tr><tr><th scope="row">rank</th><td>' + (feature.properties['rank'] !== null ? Autolinker.link(String(feature.properties['rank'])) : '') + '</td></tr><tr><th scope="row">type</th><td>' + (feature.properties['type'] !== null ? Autolinker.link(String(feature.properties['type'])) : '') + '</td></tr><tr><th scope="row">enviroType</th><td>' + (feature.properties['enviroType'] !== null ? Autolinker.link(String(feature.properties['enviroType'])) : '') + '</td></tr><tr><th scope="row">postalCode</th><td>' + (feature.properties['postalCode'] !== null ? Autolinker.link(String(feature.properties['postalCode'])) : '') + '</td></tr><tr><th scope="row">oldPostal</th><td>' + (feature.properties['oldPostal'] !== null ? Autolinker.link(String(feature.properties['oldPostal'])) : '') + '</td></tr><tr><th scope="row">sortCode</th><td>' + (feature.properties['sortCode'] !== null ? Autolinker.link(String(feature.properties['sortCode'])) : '') + '</td></tr><tr><th scope="row">supCode</th><td>' + (feature.properties['supCode'] !== null ? Autolinker.link(String(feature.properties['supCode'])) : '') + '</td></tr><tr><th scope="row">nameSup</th><td>' + (feature.properties['nameSup'] !== null ? Autolinker.link(String(feature.properties['nameSup'])) : '') + '</td></tr><tr><th scope="row">ghost</th><td>' + (feature.properties['ghost'] !== null ? Autolinker.link(String(feature.properties['ghost'])) : '') + '</tr><tr><th scope="row">Route: </th></td><td><button class="button" onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Route Me!</button></td></tr></table></tr><tr><th scope="row">Evenimentul: </th></td><td><button class="button" onclick="getEventInPane()">Despre eveniment in detalii!</button></td></tr></table>';
             layer.bindPopup(popupContent);
         }
 		
+		//Functia pentru decodarea poliliniei
 		function decodePolyline(str, precision) {
 			var index = 0,
 			lat = 0,
@@ -114,16 +125,10 @@
 			longitude_change,
 			factor = Math.pow(10, precision || 5);
 
-			// Coordinates have variable length when encoded, so just keep
-			// track of whether we've hit the end of the string. In each
-			// loop iteration, a single coordinate is decoded.
 			while (index < str.length) {
-
-				// Reset shift, result, and byte
 				byte = null;
 				shift = 0;
 				result = 0;
-
 				do {
 					byte = str.charCodeAt(index++) - 63;
 					result |= (byte & 0x1f) << shift;
@@ -150,7 +155,8 @@
 
 			return coordinates;
 		};
-
+		
+		//Functia care transforma obiectul de intrare in geoJSON
 		function polylineToGeoJSON(str, precision) {
 			var coords = decodePolyline(str, precision);
 			return {
@@ -177,6 +183,7 @@
 			iconColor: '#eee8d5'
 		});
 		
+		//Adaugare marker pentru locatia de start
 		function onMapClick(e) {
 			if (marker!=null){
 				map.removeLayer(marker);
@@ -195,6 +202,7 @@
 
 		map.on('click', onMapClick);
 		
+		//Functia pentru modificarea timpului din secunde in ore minute si secunde
 		function toTimeString(inTime){		
 			var hours=Math.floor(inTime/3600);
 			var minutes=Math.floor((inTime-hours*3600)/60);
@@ -202,77 +210,86 @@
 			return hours+' h, '+minutes+' m, '+seconds+' s';		
 		}
 		
+		//Functia care aduce ruta
 		function getRoute(finishLongitude, finishLatitiude){
+			//Daca punctul de pornire nu este definit apare o fereastra de avertizare de altfel se calculeaza traseul
 			if (startLatitude==0){
 				$.showMessageBox({
-					content:'Marcati loactia de pornire',
-					title:'Locatia de pornire',
+					content:'Marcați locația de pornire',
+					title:'Locația de pornire',
 					type: 'warning',
-					CloseButtonText:'Inchide'
+					CloseButtonText:'Închide'
 				});
 			}else{
+				//Daca exista un traseu calculat si afisat pe harta trebuie sa stergem inainte de a calcula traseul nou
 				if (geojsonLayer!=null){
 					map.removeLayer(geojsonLayer)
 				};
+				//Compunerea URL-ului cu cererea catre serverul de rutare 
 				var requestURL='http://router.project-osrm.org/viaroute?loc='+startLatitude+','+startLongitude+'&loc='+finishLatitiude+','+finishLongitude+'&instructions=false';
 				var xmlHttp = new XMLHttpRequest();
 				xmlHttp.open( "GET", requestURL, false );
 				xmlHttp.send( null );
+				//Parsarea raspunsului in JSON
 				var parsedData = JSON.parse(xmlHttp.response);
+				//Decodarea raspunsului (a geometriei) si transformarea lui in geoJSON
 				var geoJSON=polylineToGeoJSON(parsedData.route_geometry);
-				console.log(parsedData.route_summary);
+				//Mesajul cu detaliile traseului (timp si distanta)
 				$.showMessageBox({
-					content:'Distanta: '+parsedData.route_summary.total_distance/1000+' km <br> Timp: '+ toTimeString(parsedData.route_summary.total_time),
+					content:'Distanța: '+parsedData.route_summary.total_distance/1000+' km <br> Timp: '+ toTimeString(parsedData.route_summary.total_time),
 					title:'Traseul',
-					CloseButtonText:'Inchide'
+					CloseButtonText:'Închide'
 				});
+				//Adaugrea traseului pe harta
 				geojsonLayer=L.geoJson(geoJSON).addTo(map);
 			}
 		}
 		
-		function slideEventPane(){
-			var anchor = this;
-			var removeClass = "hide";
-			var addClass = "show";
-			var diff = "+=470";
-			var arrows = new Image(); 
-			arrows.src="img/Search.png"
-			arrows.width=23;
-			if($(anchor).hasClass("show")){
+		//Functia cu animatia panelului de evenimente
+		function slideEventPane(show){
+			if(show){
+				diff = "+=470";
+			}else{
 				diff = "-=470";
-				removeClass = "show";
-				addClass="hide";
-				arrows.src="img/Search_close.png"
 			}
+			//Miscarea panelului de evenimente
 			$( ".event_panel" ).animate({
 				left: diff
 				}, 700, function() {
-				// Animation complete.
-					$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
-				});     
+					//$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
+				});
+			//Miscarea butoanelor de zoom impreuna cu panelul de evenimente
+			$( ".leaflet-bar" ).animate({
+				left: diff
+				}, 700, function() {
+					//$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
+				});
+				
+			//Miscarea scarii impreuna cu panelul de evenimente
+			$( ".leaflet-bottom" ).animate({
+				left: diff
+				}, 700, function() {
+					//$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
+				});
+		
 		}
 		
+		//Functia care adauga datele in panelul de evenimente si apeleaza animatia panelului
 		function getEventInPane(){
 			if (!eventPaneOpen){
-				slideEventPane();
+				slideEventPane(true);
 				eventPaneOpen=true;
 			}
+			jQuery("#embeded_event").load("event_page/electric_castle.html");
 		}
-
-        function doStylerolocalitatipunct0() {
-            return {
-                radius: 2.2,
-                fillColor: '#e31a1c',
-                color: '#000000',
-                weight: 2.4,
-                opacity: 1.0,
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                fillOpacity: 1.0
-            }
-        }
 		
+		//Functia care inchide panelul de evenimente
+		$('.event_slider').click(function(){
+			slideEventPane(false);
+			eventPaneOpen=false;
+		})
+		
+		//Adaugarea evenimentelor (entitate punct) ca si markere
         function doPointToLayerrolocalitatipunct0(feature, latlng) {
             return L.marker(latlng)
         }
@@ -291,6 +308,7 @@
         raster_group.addTo(map);
         feature_group.addTo(map);
 		
+		//Unealta de geocodare
         var osmGeocoder = new L.Control.OSMGeocoder({
             collapsed: false,
             position: 'topright',
@@ -302,7 +320,7 @@
         function onLocationFound(e) {
             var radius = e.accuracy / 2;
             L.marker(e.latlng).addTo(map)
-            .bindPopup("You are within " + radius + " meters from this point")
+            .bindPopup("Ești la " + radius + " metrii față de acest punct")
             .openPopup();
             L.circle(e.latlng, radius).addTo(map);
         }
@@ -312,6 +330,7 @@
         stackLayers();
         map.on('overlayadd', restackLayers);
 		
+		//Functia cu animatia pentru panelul de cautare
 		$(function(){
 			$('.search_slider').click(function(){
 			var anchor = this;
@@ -330,7 +349,6 @@
 			$( ".search_panel" ).animate({
 				right: diff
 				}, 700, function() {
-				// Animation complete.
 					$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
 				});     
 		});		

@@ -70,7 +70,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 
 		var submit = document.createElement('input');
 		submit.type = "submit";
-		submit.value = "Cautare locatie";
+		submit.value = "Căutare locație";
 
 		form.appendChild(input);
 		form.appendChild(submit);

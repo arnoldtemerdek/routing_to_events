@@ -94,7 +94,7 @@ img{
 .embeded_event {
 	position:relative;
 	top:35px;
-	overflow-y: scroll;
+	overflow-y: auto;
 	left: 17px;
 	height:100%;
 }

@@ -46,7 +46,7 @@
 			<div class="embeded_event" id="embeded_event">
 			<div>
 		</div>
-        <script src="data/json_rolocalitatipunct0.js"></script>
+        <script src="data/json_PunctefestivalWGS840.js"></script>
         <script>
 		var startLatitude=0.0, startLongitude=0.0;
 		var geojsonLayer;
@@ -59,10 +59,10 @@
             }
         });
 		
-		//Initializarea obiectului de harta nivele de zoom, si extentul
+		//Initializarea obiectului de harta nivele de zoom, si extensia
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[45.7207636758,21.8295537761],[46.9872761191,25.0812428301]]);
+        }).fitBounds([[44.7636192438,21.7002911194],[47.3754662077,28.6964999049]]);
 		
         var hash = new L.Hash(map);
 		
@@ -107,8 +107,22 @@
         layerControl = L.control.layers({},{},{collapsed:false});
 		
 		//Functia care creaza continutul pentru popup
-        function pop_rolocalitatipunct0(feature, layer) {
-            var popupContent = '<table><tr><th scope="row">natCode</th><td>' + (feature.properties['natCode'] !== null ? Autolinker.link(String(feature.properties['natCode'])) : '') + '</td></tr><tr><th scope="row">name</th><td>' + (feature.properties['name'] !== null ? Autolinker.link(String(feature.properties['name'])) : '') + '</td></tr><tr><th scope="row">countyId</th><td>' + (feature.properties['countyId'] !== null ? Autolinker.link(String(feature.properties['countyId'])) : '') + '</td></tr><tr><th scope="row">countyCode</th><td>' + (feature.properties['countyCode'] !== null ? Autolinker.link(String(feature.properties['countyCode'])) : '') + '</td></tr><tr><th scope="row">county</th><td>' + (feature.properties['county'] !== null ? Autolinker.link(String(feature.properties['county'])) : '') + '</td></tr><tr><th scope="row">countyMn</th><td>' + (feature.properties['countyMn'] !== null ? Autolinker.link(String(feature.properties['countyMn'])) : '') + '</td></tr><tr><th scope="row">regionId</th><td>' + (feature.properties['regionId'] !== null ? Autolinker.link(String(feature.properties['regionId'])) : '') + '</td></tr><tr><th scope="row">regionCode</th><td>' + (feature.properties['regionCode'] !== null ? Autolinker.link(String(feature.properties['regionCode'])) : '') + '</td></tr><tr><th scope="row">region</th><td>' + (feature.properties['region'] !== null ? Autolinker.link(String(feature.properties['region'])) : '') + '</td></tr><tr><th scope="row">pop2002</th><td>' + (feature.properties['pop2002'] !== null ? Autolinker.link(String(feature.properties['pop2002'])) : '') + '</td></tr><tr><th scope="row">rank</th><td>' + (feature.properties['rank'] !== null ? Autolinker.link(String(feature.properties['rank'])) : '') + '</td></tr><tr><th scope="row">type</th><td>' + (feature.properties['type'] !== null ? Autolinker.link(String(feature.properties['type'])) : '') + '</td></tr><tr><th scope="row">enviroType</th><td>' + (feature.properties['enviroType'] !== null ? Autolinker.link(String(feature.properties['enviroType'])) : '') + '</td></tr><tr><th scope="row">postalCode</th><td>' + (feature.properties['postalCode'] !== null ? Autolinker.link(String(feature.properties['postalCode'])) : '') + '</td></tr><tr><th scope="row">oldPostal</th><td>' + (feature.properties['oldPostal'] !== null ? Autolinker.link(String(feature.properties['oldPostal'])) : '') + '</td></tr><tr><th scope="row">sortCode</th><td>' + (feature.properties['sortCode'] !== null ? Autolinker.link(String(feature.properties['sortCode'])) : '') + '</td></tr><tr><th scope="row">supCode</th><td>' + (feature.properties['supCode'] !== null ? Autolinker.link(String(feature.properties['supCode'])) : '') + '</td></tr><tr><th scope="row">nameSup</th><td>' + (feature.properties['nameSup'] !== null ? Autolinker.link(String(feature.properties['nameSup'])) : '') + '</td></tr><tr><th scope="row">ghost</th><td>' + (feature.properties['ghost'] !== null ? Autolinker.link(String(feature.properties['ghost'])) : '') + '</tr><tr><th scope="row">Route: </th></td><td><button class="button" onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Route Me!</button></td></tr></table></tr><tr><th scope="row">Evenimentul: </th></td><td><button class="button" onclick="getEventInPane()">Despre eveniment in detalii!</button></td></tr></table>';
+        function pop_events(feature, layer) {
+            var popupContent = '<table><tr><th scope="row">Nume</th><td>' +
+			(feature.properties['Nume'] !== null ? Autolinker.link(String(feature.properties['Nume'])) : '') +
+			'</td></tr><tr><th scope="row">Data</th><td>' +
+			(feature.properties['Data'] !== null ? Autolinker.link(String(feature.properties['Data'])) : '') +
+			'</td></tr><tr><td>' +
+			(feature.properties['Logo_Ofici'] !== null ? Autolinker.link(String(feature.properties['Logo_Ofici'])) : '') +
+			'</td></tr><tr><th scope="row">Pagina Oficială</th><td>' +
+			(feature.properties['PaginaOfic'] !== null ? Autolinker.link(String(feature.properties['PaginaOfic'])) : '') +
+			'</td><tr><th scope="row">Județ</th><td>' +
+			(feature.properties['JUD'] !== null ? Autolinker.link(String(feature.properties['JUD'])) : '') +
+			'</td></tr><tr><th scope="row">Localitate</th><td>' +
+			(feature.properties['Localitate'] !== null ? Autolinker.link(String(feature.properties['Localitate'])) : '') +
+			'</td></tr><tr><th scope="row">Adresa</th><td>' +
+			(feature.properties['Adresa'] !== null ? Autolinker.link(String(feature.properties['Adresa'])) : '')+
+			'</table><table></tr><tr></td><td><button class="button" onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Arată drumul către eveniment</button></td></tr><tr></td><td><button class="button" onclick="getEventInPane()">Despre eveniment in detalii</button></td></tr></table>';
             layer.bindPopup(popupContent);
         }
 		
@@ -290,21 +304,24 @@
 		})
 		
 		//Adaugarea evenimentelor (entitate punct) ca si markere
-        function doPointToLayerrolocalitatipunct0(feature, latlng) {
+        function doPointToLayerEvents(feature, latlng) {
             return L.marker(latlng)
         }
 		
-        var json_rolocalitatipunct0JSON = new L.geoJson(json_rolocalitatipunct0, {
-            onEachFeature: pop_rolocalitatipunct0, 
-            pointToLayer: doPointToLayerrolocalitatipunct0
+		//Citirea jsonului, mapare in popup si mapare afisare cu marker
+        var json_PunctefestivalWGS840JSON = new L.geoJson(json_PunctefestivalWGS840, {
+            onEachFeature: pop_events, 
+            pointToLayer: doPointToLayerEvents
             });
-        var cluster_grouprolocalitatipunct0JSON = new L.MarkerClusterGroup({showCoverageOnHover: false});
-        cluster_grouprolocalitatipunct0JSON.addLayer(json_rolocalitatipunct0JSON);
+		
+		//Definirea clusterelor
+        var cluster_groupEventsJSON = new L.MarkerClusterGroup({showCoverageOnHover: false});
+        cluster_groupEventsJSON.addLayer(json_PunctefestivalWGS840JSON);
 
-        layerOrder[layerOrder.length] = cluster_grouprolocalitatipunct0JSON;
+        layerOrder[layerOrder.length] = cluster_groupEventsJSON;
 
-        bounds_group.addLayer(json_rolocalitatipunct0JSON);
-        cluster_grouprolocalitatipunct0JSON.addTo(map);
+        bounds_group.addLayer(json_PunctefestivalWGS840JSON);
+        cluster_groupEventsJSON.addTo(map);
         raster_group.addTo(map);
         feature_group.addTo(map);
 		

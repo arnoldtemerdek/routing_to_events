@@ -274,20 +274,17 @@
 			$( ".event_panel" ).animate({
 				left: diff
 				}, 700, function() {
-					//$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
 				});
 			//Miscarea butoanelor de zoom impreuna cu panelul de evenimente
 			$( ".leaflet-bar" ).animate({
 				left: diff
 				}, 700, function() {
-					//$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
 				});
 				
 			//Miscarea scarii impreuna cu panelul de evenimente
 			$( ".leaflet-bottom" ).animate({
 				left: diff
 				}, 700, function() {
-					//$(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
 				});
 		
 		}
@@ -339,16 +336,29 @@
         osmGeocoder.addTo(map);
         map.locate({setView: true, maxZoom: 16});
 		
+		//Setare stil pentru marker geolocalizare
+		var geolocationIconMarker = L.VectorMarkers.icon({
+			iconSize:     [10, 20],
+			shadowSize:   [10, 20],
+			icon: 'location-arrow',
+			prefix: 'fa',
+			markerColor: '#89e200', 
+			iconColor: '#eee8d5'
+		});
+		
         function onLocationFound(e) {
             var radius = e.accuracy / 2;
-            L.marker(e.latlng).addTo(map)
-            .bindPopup("Ești la " + radius + " metrii față de acest punct")
+            L.marker(e.latlng, {icon: geolocationIconMarker}).addTo(map)
+            .bindPopup("Sunteți la " + radius + " metrii față de acest punct")
             .openPopup();
             L.circle(e.latlng, radius).addTo(map);
         }
 		
         map.on('locationfound', onLocationFound);
+		
+		//Adaugare scara hartii
         L.control.scale({options: {position: 'bottomleft', maxWidth: 100, metric: true, imperial: false, updateWhenIdle: false}}).addTo(map);
+		
         stackLayers();
         map.on('overlayadd', restackLayers);
 		

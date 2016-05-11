@@ -112,8 +112,6 @@
 			(feature.properties['Nume'] !== null ? Autolinker.link(String(feature.properties['Nume'])) : '') +
 			'</td></tr><tr><th scope="row">Data</th><td>' +
 			(feature.properties['Data'] !== null ? Autolinker.link(String(feature.properties['Data'])) : '') +
-			'</td></tr><tr><td>' +
-			(feature.properties['Logo_Ofici'] !== null ? Autolinker.link(String(feature.properties['Logo_Ofici'])) : '') +
 			'</td></tr><tr><th scope="row">Pagina Oficială</th><td>' +
 			(feature.properties['PaginaOfic'] !== null ? Autolinker.link(String(feature.properties['PaginaOfic'])) : '') +
 			'</td><tr><th scope="row">Județ</th><td>' +
@@ -122,7 +120,10 @@
 			(feature.properties['Localitate'] !== null ? Autolinker.link(String(feature.properties['Localitate'])) : '') +
 			'</td></tr><tr><th scope="row">Adresa</th><td>' +
 			(feature.properties['Adresa'] !== null ? Autolinker.link(String(feature.properties['Adresa'])) : '')+
-			'</table><table></tr><tr></td><td><button class="button" onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Arată drumul către eveniment</button></td></tr><tr></td><td><button class="button" onclick="getEventInPane()">Despre eveniment in detalii</button></td></tr></table>';
+			'</tr></table>'+
+			'<table  align="center"><tr></td><td><img src=logo/'+feature.properties['Logo_Ofici']+' style="width:200px;"></td></tr>'+
+			'<tr></td><td><button class="button" style="width:200px;" onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Arată drumul către eveniment</button></td></tr>'+
+			'<tr></td><td><button class="button" onclick="getEventInPane('+feature.properties['PaginaEven']+')" style="width:200px;">Despre eveniment în detalii</button></td></tr></table>';
             layer.bindPopup(popupContent);
         }
 		
@@ -187,9 +188,9 @@
 			return flipped;
 		}
 		
-		//Setare stil pentru start marker
+		//Setare stil pentru marker locatia de start
 		var startIconMarker = L.VectorMarkers.icon({
-			iconSize:     [10, 20], // size of the icon
+			iconSize:     [10, 20],
 			shadowSize:   [10, 20],
 			icon: 'home',
 			prefix: 'fa',
@@ -202,6 +203,7 @@
 			if (marker!=null){
 				map.removeLayer(marker);
 			};
+			//Creare marker care poate fi tras intr-o alta pozitie
 			marker = new L.marker(e.latlng, {draggable:'true', icon: startIconMarker});
 			marker.on('dragend', function(event){
 				marker = event.target;
@@ -209,11 +211,13 @@
 				marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
 				map.panTo(new L.LatLng(position.lat, position.lng));
 			});
+			//memorarea cordonate punct de start in 2 variabile
 			startLatitude=e.latlng.lat;
 			startLongitude=e.latlng.lng;
 			map.addLayer(marker);
 		};
 
+		//Markerul se adauga la click pe harta
 		map.on('click', onMapClick);
 		
 		//Functia pentru modificarea timpului din secunde in ore minute si secunde
@@ -289,11 +293,12 @@
 		}
 		
 		//Functia care adauga datele in panelul de evenimente si apeleaza animatia panelului
-		function getEventInPane(){
+		function getEventInPane(eventPageName){
 			if (!eventPaneOpen){
 				slideEventPane(true);
 				eventPaneOpen=true;
 			}
+			//jQuery("#embeded_event").load("event_page/"+eventPageName+".html");
 			jQuery("#embeded_event").load("event_page/electric_castle.html");
 		}
 		

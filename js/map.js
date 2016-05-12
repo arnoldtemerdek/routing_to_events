@@ -1,57 +1,7 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="css/leaflet.css" />
-        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/label.css" />
-        <link rel="stylesheet" href="css/MarkerCluster.css" />
-        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
-        <link rel="stylesheet" href="css/Leaflet.vector-markers.css">
-        <link rel="stylesheet" href="css/map.css">        
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-        <!-- <link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css" /> -->
-        <script src="js/leaflet.js"></script>
-        <script src="js/OSMBuildings-Leaflet.js"></script>
-        <script src="js/leaflet-hash.js"></script>
-        <script src="js/label.js"></script>
-        <script src="js/Autolinker.min.js"></script>
-        <script src="js/Control.OSMGeocoder.js"></script>
-        <script src="js/leaflet.markercluster.js"></script>
-        <script src="js/leaflet.vector-markers.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-        <script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>    
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
-        <script src="js/jquery-ui-messageBox.js"></script>
-        <script src="data/json_PunctefestivalWGS840.js"></script>
-        
-        <title>Harta festivalelor</title>
-    </head>
-    <body>
-        <div id="map"></div>
-        <div class="search_panel" id="search_panel">
-            <a href="javascript:void(0);" id="search_slider" class="search_slider show"><img src="img/Search.png"></a>
-			<form class="search_event-form" onsubmit="searchEvent(getElementById('search_event').value)">
-			    <input type=text class="search_event" id="search_event">
-			    <input type="submit" value="Căutare eveniment" id="search_event_button">
-			</form>
-            <br>
-        </div>
-        <div class="event_panel" id="event_panel">
-            <a href="javascript:void(0);" id="event_slider" class="event_slider show"><img src="img/Search_close.png"></a>
-            <div class="embeded_event" id="embeded_event">
-            <div>
-        </div>
-        <script>
         var startLatitude=0.0, startLongitude=0.0;
         var geojsonLayer;
         var marker;
         var eventPaneOpen=false;
-		var foundEventCircle;
         
         L.ImageOverlay.include({
             getBounds: function () {
@@ -315,6 +265,7 @@
             onEachFeature: pop_events, 
             pointToLayer: doPointToLayerEvents
             });
+        console.log(json_PunctefestivalWGS840);
         //Definirea clusterelor
         var cluster_groupEventsJSON = new L.MarkerClusterGroup({showCoverageOnHover: false});
         cluster_groupEventsJSON.addLayer(json_PunctefestivalWGS840JSON);
@@ -382,26 +333,15 @@
                 }, 700, function() {
                     $(anchor).html(arrows).removeClass(removeClass).addClass(addClass);
                 });     
-            });			
-        })
+        });
+    });
 	
-	    function searchEvent(searchVal){		    
+			function searchEvent(searchVal){
+		    console.log(searchVal);
 			var results = [];
-			//var regex = new RegExp("n univ av".replace(/(\S+)/g, function(s) { return "\\b(" + s + ")(.*)" }).replace(/\s+/g, ''), "gi");
-			for (var i=0 ; i < json_PunctefestivalWGS840.features.length ; i++){
-                if (json_PunctefestivalWGS840.features[i].properties['Nume'].toLowerCase().search(searchVal.toLowerCase())!== -1) {
-                    results.push(json_PunctefestivalWGS840.features[i]);
-                }
-	        }
-			//stergerea cercului in cazul in care exista una deja
-			if (foundEventCircle!= null) {
-			    map.removeLayer(foundEventCircle);
-			}
-			//Creare cerc in jurul markerului de eveniment gasit
-			foundEventCircle=L.circle(L.latLng(results[0].geometry.coordinates[1],results[0].geometry.coordinates[0]), 50).addTo(map);
-		    //Centrare harta pe eveniment gasit
-		    map.panTo(L.latLng(results[0].geometry.coordinates[1],results[0].geometry.coordinates[0]),17)
-		}
-        </script>
-    </body>
-</html>
+			for (var i=0 ; i < json_PunctefestivalWGS840JSON.features.length ; i++){
+                if (json_PunctefestivalWGS840JSON.features[i]['Nume'] == searchVal) {
+                results.push(json_PunctefestivalWGS840JSON.features[i]);
+            }
+	    }
+}

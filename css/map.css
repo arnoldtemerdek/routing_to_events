@@ -44,17 +44,17 @@ img{
 
 .search_location-form {
 	position:relative; 
-	width:460px; 
+	width:360px; 
 	left: +40px; 
 	top: +5px; 
 	font-size: 15px;
 }
 
-.search_event {
+.search_event-form {
 	position:relative; 
-	width:460px; 
+	width:360px; 
 	left: +40px; 
-	top: +0px; 
+	top: +10px; 
 	font-size: 15px;
 }
 
@@ -151,6 +151,7 @@ input[type=submit] {
     display: inline-block;
     font-size: 14px;
 	border-radius: 4px;
+	width:150px;
 }
 
 input[type=submit]:hover {
@@ -169,4 +170,5 @@ input[type=submit]:hover {
     display: inline-block;
     font-size: 14px;
 	border-radius: 4px;
+	width:150px;
 }

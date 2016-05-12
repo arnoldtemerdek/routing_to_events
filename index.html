@@ -400,7 +400,7 @@
 			//Creare cerc in jurul markerului de eveniment gasit
 			foundEventCircle=L.circle(L.latLng(results[0].geometry.coordinates[1],results[0].geometry.coordinates[0]), 50).addTo(map);
 		    //Centrare harta pe eveniment gasit
-		    map.panTo(L.latLng(results[0].geometry.coordinates[1],results[0].geometry.coordinates[0]),17)
+		    map.setView(L.latLng(results[0].geometry.coordinates[1],results[0].geometry.coordinates[0]),17)
 		}
         </script>
     </body>

@@ -14,10 +14,10 @@ L.Control.OSMGeocoder = L.Control.extend({
             if (results.length == 0) {
                 console.log("ERROR: didn't find a result");
 				$.showMessageBox({
-					content:'Locatia nu a fost gasita',
+					content:'Locația nu a fost găsita',
 					title:'Eroare de localizare',
 					type: 'warning',
-					CloseButtonText:'Inchide'
+					CloseButtonText:'Închide'
 				});
                 return;
             }
@@ -35,7 +35,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 			
 			//Icon pentru locatia cautata
 			var locationFoundMarker = L.VectorMarkers.icon({
-				iconSize:     [10, 20], // size of the icon
+				iconSize:     [10, 20], 
 				shadowSize:   [10, 20],
 				icon: 'star',
 				prefix: 'fa',
@@ -44,7 +44,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 			});
 			
 			searchMarker=L.marker([results[0].lat, results[0].lon],{icon: locationFoundMarker}).addTo(this._map)
-            .bindPopup("Locatia cautata")
+            .bindPopup("Locația căutată")
             .openPopup();
 		}
 	},

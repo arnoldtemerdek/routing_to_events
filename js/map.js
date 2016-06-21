@@ -31,8 +31,9 @@ var raster_group = new L.LayerGroup([]);
     maxZoom: 28
 });*/
 //Stratul de baza de tip OSM black & white
-var basemap0 = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
+var basemap0 = L.TileLayer.boundaryCanvas('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+	boundary: romPolygon,
     maxZoom: 28
 });
 basemap0.addTo(map);
@@ -40,7 +41,7 @@ basemap0.addTo(map);
 //Stratul cu umbrire
 var hillUrl = 'http://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png';
 var hillAttribution = 'Hillshading: SRTM3 v2 (<a href="http://www2.jpl.nasa.gov/srtm/">NASA</a>)';
-var hill = new L.TileLayer(hillUrl, {minZoom: 10, maxZoom: 17, attribution: hillAttribution});
+var hill = new L.TileLayer.boundaryCanvas(hillUrl, {minZoom: 10, maxZoom: 17, attribution: hillAttribution, boundary: romPolygon,});
 map.addLayer(hill);
 
 var layerOrder = new Array();

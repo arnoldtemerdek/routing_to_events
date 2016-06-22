@@ -70,13 +70,31 @@ function pop_events(feature, layer) {
     (feature.properties['JUD'] !== null ? Autolinker.link(String(feature.properties['JUD'])) : '') +
     '</td></tr><tr><th scope="row">Localitate</th><td>' +
     (feature.properties['Localitate'] !== null ? Autolinker.link(String(feature.properties['Localitate'])) : '') +
-    '</td></tr><tr><th scope="row">Adresa</th><td>' +
-    (feature.properties['Adresa'] !== null ? Autolinker.link(String(feature.properties['Adresa'])) : '')+
+    '</td></tr><tr><th scope="row">Locație</th><td>' +
+    (feature.properties['Locatie'] !== null ? Autolinker.link(String(feature.properties['Locatie'])) : '')+
+	'</td></tr><tr><th scope="row">Stare</th><td>' +
+    displayStatus(feature.properties['Stare'])+
     '</tr></table>'+
     '<table  align="center"><tr></td><td><img src=logo/'+feature.properties['Logo_Ofici']+' style="width:200px;"></td></tr>'+
     '<tr></td><td><button class="button" style="width:200px;" onclick="getRoute('+feature.geometry.coordinates[0]+','+feature.geometry.coordinates[1]+')">Arată drumul către eveniment</button></td></tr>'+
     '<tr></td><td><button class="button" onclick="getEventInPane('+feature.properties['PaginaEven']+')" style="width:200px;">Despre eveniment în detalii</button></td></tr></table>';
     layer.bindPopup(popupContent);
+}
+
+function displayStatus(inputString){
+	var statusString;
+	if (inputString!=null){
+	    if (inputString==1){
+			statusString="<font color='green'>Eveniment în viitor</font>";
+		};
+	    if (inputString==0){
+			statusString="<font color='red'>Eveniment trecut</font>";
+		}
+	    if (inputString==2){
+			statusString="<font color='orange'>Eveniment în așteptare</font>";
+		}
+	}
+	return statusString;
 }
 
 //Functia pentru decodarea poliliniei
@@ -256,6 +274,34 @@ $('.event_slider').click(function(){
     slideEventPane(false);
     eventPaneOpen=false;
 })
+
+//Setare stil pentru marker de eveniment
+var futureEventMarker = L.VectorMarkers.icon({
+    iconSize:     [10, 20],
+    shadowSize:   [10, 20],
+    icon: 'location-arrow',
+    prefix: 'fa',
+    markerColor: '#89e200', 
+    iconColor: '#eee8d5'
+});
+
+var pastEventMarker = L.VectorMarkers.icon({
+    iconSize:     [10, 20],
+    shadowSize:   [10, 20],
+    icon: 'location-arrow',
+    prefix: 'fa',
+    markerColor: '#89e200', 
+    iconColor: '#eee8d5'
+});
+
+var possibleEventMarker = L.VectorMarkers.icon({
+    iconSize:     [10, 20],
+    shadowSize:   [10, 20],
+    icon: 'location-arrow',
+    prefix: 'fa',
+    markerColor: '#89e200', 
+    iconColor: '#eee8d5'
+});
 
 //Adaugarea evenimentelor (entitate punct) ca si markere
 function doPointToLayerEvents(feature, latlng) {

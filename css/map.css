@@ -5,8 +5,8 @@ html, body, #map {
 	margin: 0;
 }
 
-.leaflet-container {
-    background-color:rgba(255,255,255,0.5);
+#map {
+    background-color: #ccc;
 }
 		
 img{

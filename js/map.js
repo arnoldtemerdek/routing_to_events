@@ -12,8 +12,13 @@ L.ImageOverlay.include({
 
 //Initializarea obiectului de harta nivele de zoom, si extensia
 var map = L.map('map', {
-    zoomControl:true, maxZoom:28, minZoom:1
+    zoomControl:true, 
+	maxZoom:28, 
+	minZoom:1
 }).fitBounds([[44.7636192438,21.7002911194],[47.3754662077,28.6964999049]]);
+
+//Setare bounds - harta ramane centrata in zona romaniei
+map.setMaxBounds([[40, 18],[50, 34]]);
 
 var hash = new L.Hash(map);
 

@@ -280,37 +280,56 @@ $('.event_slider').click(function(){
     eventPaneOpen=false;
 })
 
-//Setare stil pentru marker de eveniment
+//Setare stil pentru marker de eveniment viitor
 var futureEventMarker = L.VectorMarkers.icon({
     iconSize:     [10, 20],
     shadowSize:   [10, 20],
-    icon: 'location-arrow',
+    icon: 'circle',
     prefix: 'fa',
     markerColor: '#89e200', 
     iconColor: '#eee8d5'
 });
 
+//Setare stil pentru marker de eveniment trecut
 var pastEventMarker = L.VectorMarkers.icon({
     iconSize:     [10, 20],
     shadowSize:   [10, 20],
-    icon: 'location-arrow',
+    icon: 'circle',
     prefix: 'fa',
-    markerColor: '#89e200', 
+    markerColor: '#ff0000', 
     iconColor: '#eee8d5'
 });
 
+//Setare stil pentru marker de eveniment posibil
 var possibleEventMarker = L.VectorMarkers.icon({
     iconSize:     [10, 20],
     shadowSize:   [10, 20],
-    icon: 'location-arrow',
+    icon: 'circle',
     prefix: 'fa',
-    markerColor: '#89e200', 
+    markerColor: '#ffa500', 
     iconColor: '#eee8d5'
 });
 
+//Functia care returneaza culoarea iconului
+function getEventMarkerStyle(inputString){
+	var style;
+	if (inputString!=null){
+	    if (inputString==1){
+			style=futureEventMarker;
+		};
+	    if (inputString==0){
+			style=pastEventMarker;
+		}
+	    if (inputString==2){
+			style=possibleEventMarker;
+		}
+	}
+	return style;
+}
+
 //Adaugarea evenimentelor (entitate punct) ca si markere
 function doPointToLayerEvents(feature, latlng) {
-    return L.marker(latlng)
+    return L.marker(latlng, {icon: getEventMarkerStyle(feature.properties['Stare'])})
 }
 
 //Citirea jsonului, mapare in popup si mapare afisare cu marker
